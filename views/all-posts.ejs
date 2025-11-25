@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>African Griot - All Posts</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <div class="nav-brand">
+        <a href="/">African Griot</a>
+      </div>
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/posts">All Posts</a></li>
+        <li><a href="/about">About</a></li>
+        <li><a href="/contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main>
+    <div class="page-header">
+      <div class="container">
+        <h1>All Posts</h1>
+      </div>
+    </div>
+
+    <div class="container">
+      <% if (posts.length > 0) { %>
+        <div class="posts-list">
+          <% posts.forEach(post => { %>
+            <div class="post-item">
+              <% if (post.image) { %>
+                <img src="<%= post.image %>" alt="<%= post.title %>">
+              <% } %>
+              <div class="post-info">
+                <h2><%= post.title %></h2>
+                <p class="post-date"><%= post.date %></p>
+                <p class="post-excerpt"><%= post.content.substring(0, 200) %>...</p>
+                <div class="post-actions">
+                  <a href="/post/<%= post.id %>" class="btn-secondary">Read More</a>
+                  <form action="/post/<%= post.id %>?_method=DELETE" method="POST" style="display: inline;">
+                    <button type="submit" class="btn-delete" onclick="return confirm('Are you sure you want to delete this post?')">Delete</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+      <% } else { %>
+        <div class="no-posts">
+          <p>No posts available. <a href="/">Create one now!</a></p>
+        </div>
+      <% } %>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="social-links">
+          <h3>Follow Us</h3>
+          <a href="#">Facebook</a>
+          <a href="#">Twitter</a>
+          <a href="#">Instagram</a>
+        </div>
+      </div>
+      <p class="copyright">&copy; <%= new Date().getFullYear() %> African Griot Blog Application</p>
+    </div>
+  </footer>
+</body>
+</html>
