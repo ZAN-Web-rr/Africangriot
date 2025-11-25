@@ -8,7 +8,7 @@
     "dev": "nodemon server.js"
   },
   "keywords": ["blog", "express", "ejs", "multer", "africangriot"],
-  "author": "",
+  "author": "Emmanuel Gopeh",
   "license": "ISC",
   "dependencies": {
     "express": "^4.18.2",
