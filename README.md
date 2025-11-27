@@ -18,6 +18,7 @@ A modern blogging platform built with Express.js, EJS, and Multer. Inspired by t
 - **File Upload**: Multer
 - **Styling**: Custom CSS
 - **Deployment**: Docker, Google Cloud Run
+- **Infrastructure as Code**: Terraform
 
 ## Prerequisites
 
@@ -68,8 +69,9 @@ docker run -p 8080:8080 africangriot
 - Google Cloud SDK installed
 - Google Cloud project created
 - Billing enabled on your project
+- Terraform installed (optional, for infrastructure management)
 
-### Deployment Steps
+### Option 1: Quick Deploy (Without Terraform)
 
 1. Authenticate with Google Cloud:
 ```bash
@@ -77,22 +79,50 @@ gcloud auth login
 gcloud config set project YOUR_PROJECT_ID
 ```
 
-2. Build and push the image to Google Container Registry:
-```bash
-gcloud builds submit --tag gcr.io/YOUR_PROJECT_ID/africangriot
-```
-
-3. Deploy to Cloud Run:
+2. Deploy directly from source:
 ```bash
 gcloud run deploy africangriot \
-  --image gcr.io/YOUR_PROJECT_ID/africangriot \
+  --source . \
   --platform managed \
-  --region us-central1 \
+  --region europe-west1 \
   --allow-unauthenticated \
   --memory 512Mi
 ```
 
-4. Your application will be deployed and you'll receive a URL to access it.
+3. Your application will be deployed and you'll receive a URL to access it.
+
+### Option 2: Deploy with Terraform (Recommended for Production)
+
+Terraform allows you to manage your infrastructure as code for reproducible deployments.
+
+1. Navigate to the terraform directory:
+```bash
+cd terraform
+```
+
+2. Initialize Terraform:
+```bash
+terraform init
+```
+
+3. (Optional) If you have an existing deployment, import it:
+```bash
+terraform import google_cloud_run_service.africangriot projects/YOUR_PROJECT_ID/locations/europe-west1/services/africangriot
+```
+
+4. Review the planned changes:
+```bash
+terraform plan
+```
+
+5. Apply the configuration:
+```bash
+terraform apply
+```
+
+6. Terraform will output the service URL and other important information.
+
+For detailed Terraform documentation, see [terraform/README.md](terraform/README.md).
 
 ## Project Structure
 
@@ -107,6 +137,12 @@ africangriot/
 │   ├── post-detail.ejs
 │   ├── about.ejs
 │   └── contact.ejs
+├── terraform/         # Terraform infrastructure configuration
+│   ├── main.tf
+│   ├── variables.tf
+│   ├── outputs.tf
+│   ├── terraform.tfvars.example
+│   └── README.md
 ├── uploads/           # User uploaded images
 ├── server.js          # Main application file
 ├── package.json
@@ -147,12 +183,26 @@ The application uses the following environment variables:
 - `PORT`: Server port (default: 8080)
 - `NODE_ENV`: Environment mode (production/development)
 
+## Infrastructure Management with Terraform
+
+This project includes Terraform configuration for managing Google Cloud infrastructure:
+
+- **Cloud Run Service**: Container hosting with auto-scaling
+- **Artifact Registry**: Docker image repository
+- **Cloud Storage**: Bucket for future persistent uploads
+- **Cloud Build**: CI/CD trigger for automated deployments
+- **IAM Policies**: Security and access management
+
+See [terraform/README.md](terraform/README.md) for detailed setup instructions.
+
 ## Notes
 
-- Posts are stored in memory and will be lost when the server restarts
-- For production use, consider implementing a database (MongoDB, PostgreSQL, etc.)
-- Uploaded images are stored in the `uploads/` directory
-- For persistent storage on Google Cloud Run, consider using Google Cloud Storage
+- **Storage**: Posts are stored in memory and will be lost when the server restarts (ephemeral)
+- **Uploads**: Images are stored temporarily in the `uploads/` directory
+- **Production**: For persistent data, consider:
+  - Adding a database (MongoDB, PostgreSQL, etc.) for posts
+  - Using Google Cloud Storage for image uploads (GCS bucket already configured in Terraform)
+- **Scaling**: Current configuration uses min/max 1 instance for cost optimization
 
 ## Future Enhancements
 
