@@ -1,0 +1,23 @@
+# Example configuration values
+# Copy this file to terraform.tfvars and customize as needed
+
+project_id   = "zarnite-web"
+region       = "europe-west1"
+service_name = "africangriot"
+image_url    = "europe-west1-docker.pkg.dev/zarnite-web/cloud-run-source-deploy/africangriot/africangriot:latest"
+
+# Resource limits (matching your deployment)
+cpu_limit    = "1000m"
+memory_limit = "512Mi"
+
+# Autoscaling (matching your deployment)
+min_instances = "1"
+max_instances = "1"
+
+# Container configuration
+container_concurrency = 80
+timeout_seconds      = 300
+
+# GitHub Configuration
+github_owner = "ZAN-Web-rr"
+github_repo  = "Africangriot"
